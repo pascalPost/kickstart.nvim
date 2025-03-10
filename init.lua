@@ -114,6 +114,7 @@ vim.opt.showmode = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
+--  NOTE: for a wayland based session I needed to install `wl-clipboard`.
 vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
@@ -996,6 +997,31 @@ require('lazy').setup({
     --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+  },
+
+  -- codeium ai plugin
+  {
+    'Exafunction/codeium.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'hrsh7th/nvim-cmp',
+    },
+    config = function()
+      require('codeium').setup {
+        virtual_text = {
+          enabled = true,
+          manual = true,
+        },
+      }
+
+      -- set keymaps for manual completion
+      vim.keymap.set({ 'n', 'i' }, '<M-n>', function()
+        require('codeium.virtual_text').cycle_or_complete()
+      end)
+      vim.keymap.set({ 'n', 'i' }, '<M-c>', function()
+        require('codeium.virtual_text').clear()
+      end)
+    end,
   },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
